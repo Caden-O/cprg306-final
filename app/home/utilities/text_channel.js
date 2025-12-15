@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react"
-import Message from "@/app/utilities/message"
+import Message from "./message"
 
 export default function TextChannel(){
   const [message, setMessage] = useState("");
