@@ -1,5 +1,5 @@
 import { db } from "../_utils/firebase";
-import { collection, getDocs, addDoc, deleteDoc, query, doc, onSnapshot } from "firebase/firestore";
+import { collection, getDocs, getDoc, setDoc, addDoc, deleteDoc, query, doc } from "firebase/firestore";
 
 export const getUsers = async () => {
   const users = []
@@ -56,8 +56,28 @@ export const addUser = async (name, email, imgURL, uid) => {
     email: email,
     status: 'user',
   });
-  console.log("created new user: ",docRef);
+  console.log('created new user: ',docRef);
 }
+
+export const addUserIfNotExists = async (user) => {
+  if (!user) return;
+  const userRef = doc(db, "users", user.uid);
+  const snap = await getDoc(userRef);
+
+  if (!snap.exists()) {
+    await setDoc(userRef, {
+      userID: user.uid,
+      username: user.displayName,
+      displayName: user.displayName,
+      email: user.email,
+      img: user.photoURL,
+      status: "user",
+    });
+    console.log('created new user: ',snap);
+  }else{
+    console.log('user exists in database :)');
+  }
+};
 
 export const deleteMessage = async (channel, id) => {
   try {

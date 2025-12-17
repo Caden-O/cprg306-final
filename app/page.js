@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link"
-window.location.href = './home';
+// window.location.href = './home';
 
 export default function Page(){
   return(
