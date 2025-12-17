@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react"
 import { sendMessage, deleteMessage } from "@/app/_service/messages-service";
 import { useUserAuth } from "@/app/_utils/auth-context";
+import { Icon } from "@iconify/react";
 import Message from "./message"
 
 export default function TextChannel({messages, users, channel}){  
@@ -77,12 +78,15 @@ export default function TextChannel({messages, users, channel}){
               className="w-full h-full placeholder:text-xl placeholder:italic font-thin"
             />
           </div>
-          <div className="sticky self-center w-15 border-3 border-blue-800 rounded-xl ml-2 h-full bg-blue-500">
-            <input 
-              type="submit"
-              value="Send"
-              className="w-full h-full hover:cursor-pointer items-center text-blue-200"
-            />
+          <div className="self-center w-1/12 border-3 border-blue-800 rounded-xl ml-2 h-full bg-blue-500">
+            <div className="w-full h-full hover:cursor-pointer items-center justify-center text-blue-200 text-center flex-nowrap grid grid-cols-1 grid-rows-1">
+              <Icon icon='material-symbols:send-rounded' className="size-full col-start-1 row-start-1"/>
+              <input 
+                type="submit"
+                value=""
+                className="size-full col-start-1 row-start-1 hover:cursor-pointer"
+              />
+            </div>
           </div>
         </div>
       </form>
