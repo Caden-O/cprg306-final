@@ -47,16 +47,16 @@ export const sendMessage = async (userID, message, date, channel) => {
   console.log("created new message: ",docRef);
 }
 
-export const addUser = async (name, email, imgURL, uid) => {  
-  const docRef = await addDoc(collection(db, "users"), {
-    username: name,
-    displayName: name,
-    userID: uid,
-    img: imgURL,
-    email: email,
-    status: 'user',
+export const createReport = async (rgMessage, rgUserID, rdMessageID, rdUserID, date, channel) => {
+  const docRef = await addDoc(collection(db, "reports", channel, "messages"), {
+    reportedUserID: rdUserID,
+    reportingUserID: rgUserID,
+    reportedMessageID: rdMessageID,
+    reportReason: rgMessage,
+    reportTime: date,
+    channel: channel
   });
-  console.log('created new user: ',docRef);
+  console.log("created new message: ",docRef);
 }
 
 export const addUserIfNotExists = async (user) => {
@@ -72,6 +72,7 @@ export const addUserIfNotExists = async (user) => {
       email: user.email,
       img: user.photoURL,
       status: "user",
+      accountType: user
     });
     console.log('created new user: ',snap);
   }else{
@@ -83,7 +84,7 @@ export const deleteMessage = async (channel, id) => {
   try {
     const docRef = doc(db, "messages", channel, "messages", id);
     await deleteDoc(docRef);
-    console.log("Document successfully deleted!");
+    console.log("message successfully deleted!");
   } catch (error) {
     console.error("Error removing document: ", error);
   }

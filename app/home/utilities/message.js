@@ -1,9 +1,9 @@
 import { Icon } from "@iconify/react";
 
-export default function Message({ displayName, text, date, imageURL, report, deleteMessage }){
+export default function Message({ displayName, text, date, imageURL, reportMessage, deleteMessage }){
   return(
-    <li>
-      <div className="flex flex-row m-2 p-2 h-auto items-center border-t border-neutral-800">
+    <li className="list-none min-w-fit">
+      <div className="flex flex-row m-2 p-2 h-auto items-center">
         <div className="self-start size-16 min-w-16">
           {imageURL && (
             <img 
@@ -14,7 +14,7 @@ export default function Message({ displayName, text, date, imageURL, report, del
           )}
         </div>
         <div className="flex flex-col grow mx-3 text-lg h-auto">
-          <div className="flex flex-row w-full">
+          <div className="flex flex-row w-full min-w-fit text-nowrap">
             <div className="self-start grow">
               <p className="font-bold">
                 {displayName}
@@ -30,16 +30,20 @@ export default function Message({ displayName, text, date, imageURL, report, del
             <p>{text}</p>
           </div>
         </div>
-        <div className="text-center">
-          <button onClick={report} className="size-12 font-bold text-red-800 text-4xl hover:cursor-pointer">
-            <Icon icon="material-symbols:flag-rounded" className="size-full"/>
-          </button>
-        </div>
-        <div className="text-center">
-          <button onClick={deleteMessage} className="size-12 font-bold text-red-800 text-4xl hover:cursor-pointer">
-            <Icon icon="mdi:trash" className="size-full"/>
-          </button>
-        </div>
+        {reportMessage&&(
+          <div className="text-center">
+            <button onClick={reportMessage} className="size-12 font-bold text-red-800 text-4xl hover:cursor-pointer">
+              <Icon icon="material-symbols:flag-rounded" className="size-full"/>
+            </button>
+          </div>
+        )}
+        {deleteMessage&&(
+          <div className="text-center">
+            <button onClick={deleteMessage} className="size-12 font-bold text-red-800 text-4xl hover:cursor-pointer">
+              <Icon icon="mdi:trash" className="size-full"/>
+            </button>
+          </div>
+        )}
       </div>
     </li>
   )

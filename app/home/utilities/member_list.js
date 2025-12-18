@@ -49,7 +49,7 @@ export default function MemberList({ users }){
 
         <div className="grow overflow-y-auto overflow-x-scroll">
           {userList.map((mUser)=>{            
-            if(mUser.userID !== user.uid){
+            if(mUser.userID !== user.uid && mUser.status !== 'muted'){
               return(
                 <User photoURL={mUser.img} displayName={mUser.displayName} email={mUser.email} key={mUser.userID}/>
               )

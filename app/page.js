@@ -1,15 +1,24 @@
 "use client";
 
 import Link from "next/link"
-// window.location.href = './home';
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Page(){
+  const router = useRouter();
+
+  useEffect(() => {
+    const syncAndRedirect = async () => {
+      router.replace("/home");
+    };
+    syncAndRedirect();
+  }, [router]);
   return(
     <main>
       <div className="flex flex-col items-center">
-        <p className="mt-5 p-3 text-4xl font-semibold">aaah! this page should redirect to '/home'!</p>
-        <p className="m-2 italic text-lg">if it doesnt, you can navigate there with the link below:</p>
-        <Link className="m-2 italic text-lg text-blue-200 hover:underline visited:text-purple-200" href={`/home`}>(Take me to the home page!)</Link>
+        <p className="mt-5 p-3 text-4xl font-semibold text-neutral-500">aaah! this page should redirect to '/home'!</p>
+        <p className="m-2 italic text-lg text-neutral-500">if it doesnt, you can navigate there with the link below:</p>
+        <Link className="m-2 italic text-lg text-blue-200 hover:underline" href={`/home`}>manual redirect...</Link>
       </div>
     </main>
   )
