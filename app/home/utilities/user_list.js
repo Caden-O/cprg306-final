@@ -27,13 +27,13 @@ export default function MemberList({ users }){
             alt={`missing profile image.`}
             width={50}
             height={50}
-            source="./img/Screenshot2025-12-16201634.png"
+            source="./img/gg--profile.png"
             className="size-auto rounded-full object-cover"/>
         )}
-          <div className="size-full flex justify-center flex-col grow ml-2">
-            <p className="text-lg">{displayName}</p>
-            <p className="text-neutral-500 text-sm">{email}</p>
-          </div>
+        <div className="size-full flex justify-center flex-col grow ml-2">
+          <p className="text-lg">{displayName}</p>
+          <p className="text-neutral-500 text-sm">{email}</p>
+        </div>
       </div>
     )
   }
@@ -47,7 +47,7 @@ export default function MemberList({ users }){
           <hr className="m-3 text-neutral-600"/>
         </div>
 
-        <div className="grow overflow-y-auto overflow-x-scroll">
+        <div className="grow overflow-y-auto">
           {userList.map((mUser)=>{            
             if(mUser.userID !== user.uid && mUser.status !== 'muted'){
               return(

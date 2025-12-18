@@ -13,18 +13,15 @@ const nextConfig = {
         hostname: 'media.gettyimages.com',
         port: '',
         pathname: '**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        port: '',
+        pathname: '**'
       }
     ],
   },
-//   "hosting": {
-//   "redirects": [
-//     {
-//       "source": "",
-//       "destination": "/home",
-//       "type": 301
-//     }
-//   ]
-// }
 };
 
 export default nextConfig;

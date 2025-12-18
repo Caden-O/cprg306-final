@@ -1,14 +1,14 @@
 import { Icon } from "@iconify/react";
 
-export default function Message({ displayName, text, date, imageURL, reportMessage, deleteMessage }){
+export default function Message({ user, text, date, reportMessage, deleteMessage }){
   return(
     <li className="list-none min-w-fit">
       <div className="flex flex-row m-2 p-2 h-auto items-center">
         <div className="self-start size-16 min-w-16">
-          {imageURL && (
+          {user.img && (
             <img 
-            src={imageURL}
-            alt="your profile image."
+            src={user.img}
+            alt="profile image"
             width={50}
             height={50} className="size-auto rounded-full object-cover"/>
           )}
@@ -17,7 +17,7 @@ export default function Message({ displayName, text, date, imageURL, reportMessa
           <div className="flex flex-row w-full min-w-fit text-nowrap">
             <div className="self-start grow">
               <p className="font-bold">
-                {displayName}
+                {user.displayName}
               </p>
             </div>
             <div className="self-end">

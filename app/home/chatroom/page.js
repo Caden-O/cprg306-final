@@ -2,15 +2,13 @@
 
 import Link from "next/link";
 import Header from "../utilities/header";
-import MemberList from "../utilities/member_list";
+import MemberList from "../utilities/user_list";
 import TextChannel from "../utilities/text_channel";
 import ChannelSurfer from "../utilities/channel_surfer";
 import { useState, useEffect } from "react";
 import { useUserAuth } from "../../_utils/auth-context";
-import { getUsers, getChannels } from "@/app/_service/messages-service";
-import { collection, query, onSnapshot } from "firebase/firestore";
+import { listenToMessages, getUsers, getChannels } from "@/app/_service/database-service";
 import { useRouter } from "next/navigation";
-import { db } from "@/app/_utils/firebase";
 
 export default function Chatroom(){
   const { user, firebaseSignOut } = useUserAuth();
@@ -19,53 +17,32 @@ export default function Chatroom(){
   const [ userList, setUserList ] = useState([]);
   const [ channelList, setChannelList ] = useState([]);
   const [ selectedChannel, setSelectedChannel ] = useState("general");
-  const [reportWindowOpen, setReportWindowOpen] = useState(false);
+  const [ reportWindowOpen, setReportWindowOpen ] = useState(false);
   const router = useRouter();
 
-  useEffect(()=>{
-    if (user !== null){
-      loadUsers(),
-      loadChannels()
-
-      const q = query(collection(db, "messages", selectedChannel, "messages"));
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const messages = [];
-        querySnapshot.forEach((doc) => {
-          const message= doc.data()
-          message.id = doc.id
-          messages.push(message)
-        });
-        setRetrievedMessages(messages);
-      });
-      return () => unsubscribe();
-    }
-  }, [user, selectedChannel])
+  useEffect(() => {
+  if (user !== null){
+    loadUsers();
+    loadChannels();
+    const unsubscribe = listenToMessages(
+      selectedChannel, (messages) => {setRetrievedMessages(messages);}
+    ); 
+    return () => unsubscribe();
+  }
+}, [user, selectedChannel]);
   
   useEffect(()=>{
-    sortMessages()
+    sortMessages();
   }, [retrievedMessages])
 
   useEffect(()=>{
     setReportWindowOpen(false)
   }, [selectedChannel])
 
-  // useEffect(() => {
-  //   const redirect = async () => {
-  //     await user;
-  //     if (user !== null) return;
-  //     if(user == null){
-  //       router.replace("/home");
-  //     }
-  //   };
-  //   redirect();
-  // }, [user, router]);
-
-
   async function loadUsers() {
     await user;
     try {
       getUsers().then(users => {
-        // console.log("Loading users", [...users]);
         setUserList([...users])
       })
     } catch(error) {
@@ -77,7 +54,6 @@ export default function Chatroom(){
     await user;
     try {
       getChannels().then(channels => {
-        // console.log("Loading channels", [...channels]);
         setChannelList([...channels])
       })
     } catch(error) {
@@ -87,7 +63,6 @@ export default function Chatroom(){
 
   function sortMessages(){
     const sortList = [...retrievedMessages];
-    // console.log('sorting...');
     sortList.sort((a, b) => (a.date.toString().localeCompare(b.date.toString())));
     setSortedMessages([...sortList])
   }

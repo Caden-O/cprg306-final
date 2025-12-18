@@ -1,5 +1,23 @@
 import { db } from "../_utils/firebase";
-import { collection, getDocs, getDoc, setDoc, addDoc, deleteDoc, query, doc } from "firebase/firestore";
+import { collection, getDocs, getDoc, setDoc, addDoc, deleteDoc, query, doc, onSnapshot } from "firebase/firestore";
+
+export const listenToMessages = (channel, onMessagesUpdate) => {
+  const q = query(collection(db, "messages", channel, "messages"));
+
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const messages = [];
+
+    querySnapshot.forEach((doc) => {
+      const message = doc.data();
+      message.id = doc.id;
+      messages.push(message);
+    });
+
+    onMessagesUpdate(messages);
+  });
+
+  return unsubscribe;
+};
 
 export const getUsers = async () => {
   const users = []
@@ -47,36 +65,37 @@ export const sendMessage = async (userID, message, date, channel) => {
   console.log("created new message: ",docRef);
 }
 
-export const createReport = async (rgMessage, rgUserID, rdMessageID, rdUserID, date, channel) => {
+export const createReport = async (rdUserID, rgUserID, rdMessageID, rdMessageText, rgMessage, date, channel) => {  
   const docRef = await addDoc(collection(db, "reports", channel, "messages"), {
     reportedUserID: rdUserID,
     reportingUserID: rgUserID,
     reportedMessageID: rdMessageID,
+    reportedMessageText: rdMessageText,
     reportReason: rgMessage,
     reportTime: date,
-    channel: channel
   });
   console.log("created new message: ",docRef);
 }
 
 export const addUserIfNotExists = async (user) => {
-  if (!user) return;
+  if (user == null) return;
   const userRef = doc(db, "users", user.uid);
   const snap = await getDoc(userRef);
-
   if (!snap.exists()) {
+    const provider = user.providerData?.[0]?.providerId ?? "unknown";
     await setDoc(userRef, {
       userID: user.uid,
-      username: user.displayName,
-      displayName: user.displayName,
-      email: user.email,
-      img: user.photoURL,
+      username: user.displayName || user.email?.split("@")[0] || "user",
+      displayName: user.displayName || "User",
+      email: user.email ?? null,
+      img: user.photoURL ?? null,
+      provider: provider,
       status: "user",
-      accountType: user
     });
-    console.log('created new user: ',snap);
-  }else{
-    console.log('user exists in database :)');
+
+    console.log("Created new user:", user.uid);
+  } else {
+    console.log("User exists in database");
   }
 };
 
@@ -89,14 +108,3 @@ export const deleteMessage = async (channel, id) => {
     console.error("Error removing document: ", error);
   }
 };
-
-// const q = query(collection(db, "messages", "general", "messages"));
-// const unsubscribe = onSnapshot(q, (querySnapshot) => {
-  // const messages = [];
-  // querySnapshot.forEach((doc) => {
-  //   const message= doc.data()
-  //   message.id = doc.id
-  //   messages.push(message)
-  // });
-//   return([...messages])
-// });
